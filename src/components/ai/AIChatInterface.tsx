@@ -239,6 +239,72 @@ export default function AIChatInterface({ className = "" }: AIChatInterfaceProps
     scrollToBottom();
   }, [messages]);
 
+  const startVoiceRecording = () => {
+    if (recognitionRef.current && !isRecording) {
+      setIsRecording(true);
+      recognitionRef.current.start();
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    if (recognitionRef.current && isRecording) {
+      recognitionRef.current.stop();
+    }
+  };
+
+  const handleVoiceMessage = useCallback(async (transcript: string) => {
+    const normalized = transcript.trim();
+    if (!normalized) return;
+
+    const userMessage: Message = {
+      id: `${Date.now()}-voice-user`,
+      type: 'user',
+      content: normalized,
+      timestamp: new Date(),
+      isVoice: true,
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setIsTyping(true);
+
+    try {
+      const response = await fetch('/api/ai/voice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: normalized }),
+      });
+
+      if (!response.ok) throw new Error(`Voice endpoint failed: ${response.status}`);
+
+      const payload = await response.json();
+      const aiContent = typeof payload?.response === 'string' && payload.response.trim()
+        ? payload.response
+        : 'I heard you, but could not generate a response right now.';
+
+      const aiMessage: Message = {
+        id: `${Date.now()}-voice-ai`,
+        type: 'assistant',
+        content: aiContent,
+        timestamp: new Date(),
+        isVoice: true,
+      };
+      setMessages(prev => [...prev, aiMessage]);
+      if (voiceSettings.voiceEnabled && voiceSettings.autoSpeak) {
+        speakText(aiContent);
+      }
+    } catch (error) {
+      console.error('Voice message handling failed:', error);
+      setMessages(prev => [...prev, {
+        id: `${Date.now()}-voice-error`,
+        type: 'assistant',
+        content: 'I captured your voice input, but failed to process it. Please try again.',
+        timestamp: new Date(),
+        variant: 'system',
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
+  }, [voiceSettings.voiceEnabled, voiceSettings.autoSpeak]);
+
   // Initialize speech recognition and synthesis (client-only)
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -252,7 +318,10 @@ export default function AIChatInterface({ className = "" }: AIChatInterfaceProps
         r.lang = 'en-US';
         r.onresult = (event: any) => {
           const transcript = event.results?.[0]?.[0]?.transcript ?? '';
-          if (transcript) setInputMessage(transcript);
+          if (transcript) {
+            setInputMessage(transcript);
+            void handleVoiceMessage(transcript);
+          }
           setIsRecording(false);
         };
         r.onerror = () => setIsRecording(false);
@@ -264,20 +333,7 @@ export default function AIChatInterface({ className = "" }: AIChatInterfaceProps
       try { recognitionRef.current?.abort(); } catch { }
       try { synthRef.current?.cancel(); } catch { }
     };
-  }, []);
-
-  const startVoiceRecording = () => {
-    if (recognitionRef.current && !isRecording) {
-      setIsRecording(true);
-      recognitionRef.current.start();
-    }
-  };
-
-  const stopVoiceRecording = () => {
-    if (recognitionRef.current && isRecording) {
-      recognitionRef.current.stop();
-    }
-  };
+  }, [handleVoiceMessage]);
 
   const pushUpgradeMessage = useCallback((content: string) => {
     setMessages(prev => [
