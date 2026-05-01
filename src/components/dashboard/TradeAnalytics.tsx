@@ -865,8 +865,11 @@ export default function TradeAnalytics({ trades, session, isAdmin, className = "
         <Brain className="w-16 h-16 mx-auto mb-4 text-blue-500" />
         <h3 className="text-xl font-semibold mb-2">AI Forecast Panel</h3>
         <p className="text-muted-foreground mb-4">
-          Smart Money Concepts forecast panel coming soon. This feature will provide AI-powered market predictions.
+          Forecast MVP is now available with trade-derived direction, confidence scoring, and scenario analysis.
         </p>
+        <Button onClick={() => router.push('/dashboard/trade-analytics/forecast')}>
+          Open Forecast Workspace
+        </Button>
       </CardContent>
     </Card>
   );
