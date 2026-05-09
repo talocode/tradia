@@ -2,7 +2,16 @@
 "use client";
 
 import React from "react";
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
+import dynamic from "next/dynamic";
+import Spinner from "@/components/ui/spinner";
+
+const PieChartWrapper = dynamic(
+  () => import("@/components/charts/PieChartWrapper"),
+  { 
+    ssr: false,
+    loading: () => <div className="h-96 flex items-center justify-center"><Spinner /></div>
+  }
+);
 
 type TradeForPattern = {
   profit?: number | string;
@@ -12,55 +21,16 @@ interface TradePatternChartProps {
   trades?: ReadonlyArray<TradeForPattern>;
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#845EC2", "#D65DB1"];
-
 export default function TradePatternChart({
   trades = [],
 }: TradePatternChartProps): React.ReactElement {
   if (!Array.isArray(trades) || trades.length === 0) {
     return (
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-gray-500 dark:text-gray-400">
         No trade data to analyze patterns.
       </div>
     );
   }
 
-  const toNumber = (v: number | string | undefined): number =>
-    typeof v === "number" ? v : Number(v ?? 0);
-
-  // Example pattern analysis: win vs loss frequency
-  const winLossData = [
-    { name: "Wins", value: trades.filter((t) => toNumber(t.profit) > 0).length },
-    { name: "Losses", value: trades.filter((t) => toNumber(t.profit) <= 0).length },
-  ];
-
-  return (
-    <div className="w-full h-96">
-      <h2 className="text-xl font-semibold mb-4">Trade Pattern Analysis</h2>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={winLossData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={({ name, percent }): string =>
-              `${name}: ${percent !== undefined ? (percent * 100).toFixed(0) : "0"}%`
-            }
-            outerRadius={120}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {winLossData.map((_, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
-  );
+  return <PieChartWrapper trades={trades} />;
 }
