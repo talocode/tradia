@@ -428,6 +428,82 @@ export default function Home(): React.ReactElement {
                     </div>
                 </section>
 
+                {/* Prop Firm Rules Section */}
+                <section className="py-16 px-6 bg-gray-100 dark:bg-gray-900">
+                    <div className="max-w-6xl mx-auto text-center">
+                        <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Precision for Prop Firms: Master Rules & Protect Capital</h2>
+                        <p className="text-gray-700 dark:text-gray-300 max-w-3xl mx-auto text-lg mb-12">
+                            TradiaAI isn't just another trading journal. It's engineered to help you navigate the strict rules of prop firm challenges and funded accounts, transforming how you manage risk and decision-making.
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div className="text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <div className="w-14 h-14 bg-indigo-700/10 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <AiOutlineBarChart className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Daily Drawdown Awareness</h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Stay aware of your real-time daily drawdown. TradiaAI helps you track your progress against firm limits, giving you the insights needed to protect your profits.
+                                </p>
+                            </div>
+
+                            <div className="text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <div className="w-14 h-14 bg-green-700/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <AiOutlineLock className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Max Loss Discipline</h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Understand your maximum loss exposure and adherence to rules. TradiaAI helps you review your risk per trade and overall account risk to build strong discipline.
+                                </p>
+                            </div>
+
+                            <div className="text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <div className="w-14 h-14 bg-red-700/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <AiOutlineThunderbolt className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Overtrading & Revenge Spotting</h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Our AI helps you spot patterns of overtrading or revenge trading after a loss. Gain awareness to break these habits and protect your capital from emotional decisions.
+                                </p>
+                            </div>
+
+                            <div className="text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <div className="w-14 h-14 bg-yellow-700/10 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <AiOutlineGlobal className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Challenge Progress Tracking</h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Monitor your progress towards prop firm profit targets and evaluation milestones. TradiaAI helps you understand your performance within the context of your challenge.
+                                </p>
+                            </div>
+
+                            <div className="text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <div className="w-14 h-14 bg-blue-700/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <AiOutlineCheck className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Funded Account Protection</h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Protect your hard-earned funded account. TradiaAI provides clarity on your trading behavior and risk exposure, helping you make informed decisions to preserve your capital.
+                                </p>
+                            </div>
+
+                            <div className="text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                                <div className="w-14 h-14 bg-purple-700/10 text-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <AiOutlineArrowRight className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Risk per Trade Review</h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Analyze your risk per trade to ensure consistency and adherence to your trading plan. TradiaAI helps you pinpoint where you might be over-risking or under-risking your capital.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-12 text-center text-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                            TradiaAI provides advanced analytical tools to assist in your trading decisions and prop firm compliance awareness. It does not guarantee profits or passing prop firm challenges.
+                        </div>
+                    </div>
+                </section>
+
                 {/* BENEFITS + INSIGHT */}
                 <section className="py-14 px-6 bg-gray-50 dark:bg-black">
                     <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -642,21 +718,6 @@ export default function Home(): React.ReactElement {
             </main>
         </>
     );
-}
-
-
- );
-}
-
-
-<Footer />
-            </main>
-        </>
-    );
-}
-
-
- );
 }
 
 

@@ -70,15 +70,16 @@ const PLANS = [
     name: "Elite",
     monthly: 39,
     yearly: 390,
+    description: "For advanced traders managing larger accounts, multiple accounts, or more serious prop firm tracking needs.",
     highlights: [
       "Everything in Plus",
-      "Premium AI features",
+      "All advanced AI features unlocked",
       "AI strategy builder",
       "Prop-firm dashboard",
       "All AI features included",
       "Priority support"
     ],
-    cta: "Upgrade to Elite",
+    cta: "Choose Elite",
     tag: "Advanced",
   },
 ];
@@ -405,7 +406,13 @@ export default function PricingPage(): React.ReactElement {
               <div className="space-y-3">
                 {[
                   { q: "Can I use TradiaAI for prop firm challenges?", a: "Absolutely. TradiaAI is specifically designed for prop firm traders to track evaluations, monitor drawdown, and ensure compliance with their firm&apos;s rules. It&apos;s your essential tool for passing and maintaining funded accounts." },
-                  { q: "Does TradiaAI replace my broker&apos;s reports or trading platform?", a: "No, TradiaAI complements your broker&apos;s reports and trading platform. It aggregates your trade data to provide AI-driven insights, risk analysis, and performance breakdowns that traditional platforms don&apos;t offer, giving you a deeper understanding of your trading behavior." },
+                  { q: "Does TradiaAI replace my broker, MT4, or MT5?", a: "No, TradiaAI is a performance intelligence and AI trading journal layer that complements your broker and trading platform. It aggregates your trade data to provide AI-driven insights, risk analysis, and performance breakdowns that traditional platforms don&apos;t offer, giving you a deeper understanding of your trading behavior." },
+                  { q: "Can I import trades from MT4 or MT5?", a: "Yes, you can easily import your complete trade history via CSV export from MT4, MT5, TradingView, cTrader, or any other platform. Direct API integrations are planned for the future." },
+                  { q: "Can I track drawdown and risk rules?", a: "Yes, TradiaAI helps you closely monitor your daily drawdown, maximum loss limits, and risk per trade to ensure you stay compliant with prop firm rules and protect your capital. Our AI flags potential rule breaches before they occur." },
+                  { q: "Is TradiaAI for beginners or funded traders?", a: "TradiaAI is built for serious Forex traders at all stages of their prop firm journey. From those working to pass their first challenge to experienced funded traders managing multiple accounts, our AI provides actionable insights to improve consistency and discipline." },
+                  { q: "Can I use TradiaAI before I get funded?", a: "Definitely. TradiaAI is an invaluable tool for preparing for and passing prop firm challenges. It helps you identify weaknesses, optimize strategies, and build the discipline required to secure your funded account." },
+                  { q: "Does TradiaAI guarantee I will pass a prop firm challenge?", a: "While TradiaAI provides powerful insights and tools to significantly improve your chances, it does not guarantee profits or passing prop firm challenges. Trading involves risk, and your success ultimately depends on your consistent application of learned insights." },
+                  { q: "Which plan should I choose as a prop firm trader?", a: "For active prop firm challenge traders, the **Pro plan** offers deeper AI insights and robust risk tracking. For serious funded traders managing larger accounts or multiple challenges, the **Plus** or **Elite plans** provide the most advanced psychology insights, comprehensive analysis, and enhanced prop firm tracking features." },
                   { q: "Is there a free plan?", a: "Yes — Starter is free forever and includes core analytics, CSV import, and 30 days of trade history. No credit card required." },
                   { q: "Which integrations are supported?", a: "CSV imports are supported for comprehensive trade analysis. Email us at support@tradiaai.app for API integration requests." },
                   { q: "Can I upgrade or downgrade anytime?", a: "Yes, you can upgrade, downgrade, or cancel anytime. Annual plans get a 20% discount and are billed upfront. Monthly plans are billed every 30 days." },
