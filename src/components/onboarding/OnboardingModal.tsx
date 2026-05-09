@@ -6,7 +6,7 @@ import { useOnboarding, OnboardingStep } from "@/hooks/useOnboarding";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Upload, Settings, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import Link from "next/link";
 
 const STEPS_CONFIG: Record<OnboardingStep, { title: string; description: string; icon: React.ReactNode }> = {
