@@ -36,6 +36,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import DashboardMetrics from "@/components/DashboardMetrics";
+import OnboardingModal from "@/components/onboarding/OnboardingModal";
 
 // --- Tab Definitions ---
 type DashboardTabDef = {
@@ -349,6 +350,7 @@ export default function PropFirmDashboard() {
     return (
         <LayoutClient>
             <PropFirmDashboardContent />
+            <OnboardingModal />
         </LayoutClient>
     );
 }
