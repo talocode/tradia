@@ -325,9 +325,7 @@ export default function PricingPage(): React.ReactElement {
                         {p.cta}
                       </button>
 
-                      <Link href="/pricing" className="text-center text-sm text-gray-500 dark:text-gray-400 hover:underline">
-                        Compare plans
-                      </Link>
+
                     </div>
                   </motion.div>
                 );
@@ -406,6 +404,8 @@ export default function PricingPage(): React.ReactElement {
 
               <div className="space-y-3">
                 {[
+                  { q: "Can I use TradiaAI for prop firm challenges?", a: "Absolutely. TradiaAI is specifically designed for prop firm traders to track evaluations, monitor drawdown, and ensure compliance with their firm&apos;s rules. It&apos;s your essential tool for passing and maintaining funded accounts." },
+                  { q: "Does TradiaAI replace my broker&apos;s reports or trading platform?", a: "No, TradiaAI complements your broker&apos;s reports and trading platform. It aggregates your trade data to provide AI-driven insights, risk analysis, and performance breakdowns that traditional platforms don&apos;t offer, giving you a deeper understanding of your trading behavior." },
                   { q: "Is there a free plan?", a: "Yes — Starter is free forever and includes core analytics, CSV import, and 30 days of trade history. No credit card required." },
                   { q: "Which integrations are supported?", a: "CSV imports are supported for comprehensive trade analysis. Email us at support@tradiaai.app for API integration requests." },
                   { q: "Can I upgrade or downgrade anytime?", a: "Yes, you can upgrade, downgrade, or cancel anytime. Annual plans get a 20% discount and are billed upfront. Monthly plans are billed every 30 days." },
