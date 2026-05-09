@@ -615,7 +615,7 @@ export default function Home(): React.ReactElement {
                                 {[
                                     { q: "Can I track my FTMO / Prop Firm evaluation?", a: "Absolutely. Tradia is built to track drawdown and consistency rules, making it the perfect companion for anyone navigating prop firm challenges." },
                                     { q: "How does the AI help me pass?", a: "The AI identifies &apos;Account Killers&apos; &mdash; the specific mistakes that lead to large drawdowns. By fixing these, you increase your probability of hitting the profit target safely." },
-                                    { q: "Does it support MT4/MT5 and TradingView?", a: "Yes. You can import your trade history via CSV or sync screenshots directly to get instant AI analysis on your setups." },
+                                    { q: "Does TradiaAI integrate with MT4/MT5 or TradingView?", a: "Currently, you can easily import your trade history via CSV from any platform, including MT4, MT5, and TradingView, for instant AI analysis. Direct API integrations are planned for the future." },
                                 ].map((fq, i) => (
                                     <details key={i} className="p-4 rounded-xl border border-gray-300 dark:border-white/10 bg-white dark:bg-gray-900/50">
                                         <summary className="font-medium text-gray-900 dark:text-white cursor-pointer">{fq.q}</summary>
@@ -629,7 +629,7 @@ export default function Home(): React.ReactElement {
                             <h4 className="text-xl font-bold text-black dark:text-white">Stop risking your capital on guesswork.</h4>
                             <p className="mt-2 text-gray-600 dark:text-gray-300">Secure your edge today and join the top 1% of funded traders who use data to win.</p>
                             <div className="mt-6 flex gap-3">
-                                <button onClick={navSignup} className="bg-white hover:bg-gray-200 text-black px-6 py-3 rounded-full font-bold transition-colors border border-gray-300">Start Your Trial</button>
+                                <button onClick={navSignup} className="bg-white hover:bg-gray-200 text-black px-6 py-3 rounded-full font-bold transition-colors border border-gray-300">Start Analyzing Free</button>
                                 <Link href="/pricing" className="px-6 py-3 rounded-full border-2 border-black dark:border-white text-black dark:text-white font-semibold hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">Compare Plans</Link>
                             </div>
 
@@ -642,6 +642,21 @@ export default function Home(): React.ReactElement {
             </main>
         </>
     );
+}
+
+
+ );
+}
+
+
+<Footer />
+            </main>
+        </>
+    );
+}
+
+
+ );
 }
 
 
