@@ -25,6 +25,7 @@ import {
   FileText,
   Wallet,
   ChevronRight,
+  Globe,
 } from "lucide-react";
 
 interface TabDef {
@@ -61,6 +62,7 @@ const iconMap = {
   Settings,
   Brain,
   FileText,
+  Globe,
 };
 
 export default function DashboardSidebar({
