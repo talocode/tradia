@@ -1,5 +1,4 @@
-import nodemailer from "nodemailer";
-import type Transporter from "nodemailer/lib/transporter";
+import nodemailer, { type Transporter } from "nodemailer";
 
 type EmailProvider = "resend" | "smtp";
 
