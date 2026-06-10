@@ -29,6 +29,7 @@ const customJestConfig = {
     '<rootDir>/node_modules/',
     '<rootDir>/cipher/',
     '<rootDir>/backend/',
+    '<rootDir>/src/components/market/__tests__/lightweight-charts.mock.ts',
   ],
 };
 
