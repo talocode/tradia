@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { resolvePublicOrigin } from "@/lib/app-origin";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -8,8 +9,9 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const token = url.searchParams.get("token");
 
-  const successUrl = new URL("/verify-email/success", url);
-  const failUrl = new URL("/verify-email/failed", url);
+  const origin = resolvePublicOrigin(req);
+  const successUrl = new URL("/verify-email/success", origin);
+  const failUrl = new URL("/verify-email/failed", origin);
 
   if (!token) {
     failUrl.searchParams.set("reason", "missing_token");

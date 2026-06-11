@@ -1,17 +1,10 @@
 // lib/mailer.ts
 import { sendEmail } from "@/lib/email";
-
-function getAppOrigin() {
-  return (
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXTAUTH_URL ||
-    "https://tradia-app.vercel.app"
-  );
-}
+import { resolvePublicOrigin } from "@/lib/app-origin";
 
 export async function sendVerificationEmail(to: string, token: string) {
   // Build verification URL using token provided by caller
-  const origin = getAppOrigin();
+  const origin = resolvePublicOrigin();
   const verifyUrl = `${origin}/api/auth/verify-email?token=${encodeURIComponent(
     token
   )}`;
@@ -31,7 +24,7 @@ export async function sendVerificationEmail(to: string, token: string) {
 // Sends a simple password reset email. The token storage is handled by the caller
 // (forgot-password route) so this function only builds and sends the email.
 export async function sendPasswordResetEmail(to: string, token: string) {
-  const origin = getAppOrigin();
+  const origin = resolvePublicOrigin();
   const resetUrl = `${origin}/api/reset-password?token=${encodeURIComponent(
     token
   )}`;
@@ -49,7 +42,7 @@ export async function sendPasswordResetEmail(to: string, token: string) {
 }
 
 export async function sendTrialExpiredEmail(to: string) {
-  const origin = getAppOrigin();
+  const origin = resolvePublicOrigin();
   const upgradeUrl = `${origin}/checkout?reason=trial_expired`;
   const html = `
     <p>Hi there,</p>
