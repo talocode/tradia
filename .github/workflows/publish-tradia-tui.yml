@@ -1,0 +1,36 @@
+name: Publish TradiaAI TUI
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'tradia-tui-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/tradia-tui
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --filter tradia...
+
+      - name: Validate
+        run: pnpm run typecheck && pnpm run test && pnpm run build
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -24,7 +24,10 @@
     "unusual-whales"
   ],
   "bin": {
-    "tradia": "./dist/index.js"
+    "tradia": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist"
