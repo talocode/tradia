@@ -1,0 +1,57 @@
+{
+  "name": "tradia",
+  "version": "0.1.0",
+  "description": "Terminal AI market intelligence assistant for traders.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Talocode",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/talocode/tradia.git",
+    "directory": "packages/tradia-tui"
+  },
+  "homepage": "https://github.com/talocode/tradia#tradiaai-tui",
+  "bugs": {
+    "url": "https://github.com/talocode/tradia/issues"
+  },
+  "keywords": [
+    "trading",
+    "terminal",
+    "tui",
+    "market-intelligence",
+    "ai",
+    "tradia",
+    "unusual-whales"
+  ],
+  "bin": {
+    "tradia": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsup && chmod +x dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "dotenv": "^17.2.1",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
