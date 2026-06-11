@@ -9,9 +9,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/tradia-tui
     steps:
       - uses: actions/checkout@v4
 
@@ -25,12 +22,14 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        run: pnpm install --filter tradia...
+        run: pnpm install --no-frozen-lockfile
 
       - name: Validate
+        working-directory: packages/tradia-tui
         run: pnpm run typecheck && pnpm run test && pnpm run build
 
       - name: Publish to npm
+        working-directory: packages/tradia-tui
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
