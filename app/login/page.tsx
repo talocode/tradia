@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { getSession, signIn } from "next-auth/react";
@@ -15,8 +14,6 @@ const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
 
 function LoginPage(): React.ReactElement {
-  const router = useRouter();
-
   const [form, setForm] = useState({ email: "", password: "" });
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
