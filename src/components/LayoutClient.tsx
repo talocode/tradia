@@ -2,7 +2,6 @@
 
 "use client";
 
-import { SessionProvider } from "next-auth/react";
 import { ReactNode } from "react";
 import UpgradeModal from "@/components/modals/UpgradeModal";
 
@@ -12,10 +11,10 @@ interface LayoutClientProps {
 
 const LayoutClient = ({ children }: LayoutClientProps) => {
   return (
-    <SessionProvider>
+    <>
       {children}
       <UpgradeModal />
-    </SessionProvider>
+    </>
   );
 };
 

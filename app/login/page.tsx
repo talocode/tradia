@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { Shield, Zap, TrendingUp, Eye, EyeOff } from "lucide-react";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
@@ -70,6 +70,25 @@ function LoginPage(): React.ReactElement {
     }
   }, [form.email, remember]);
 
+  const resolveLoginError = (result: { error?: string | null; url?: string | null }) => {
+    const url = result?.url || "";
+    if (url.includes("error=")) {
+      try {
+        const parsed = new URL(url);
+        const message = parsed.searchParams.get("error");
+        if (message) return decodeURIComponent(message.replace(/\+/g, " "));
+      } catch {
+        // ignore malformed callback URLs
+      }
+    }
+
+    const code = result?.error;
+    if (!code || code === "CredentialsSignin") {
+      return "Invalid email or password.";
+    }
+    return code;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -82,12 +101,19 @@ function LoginPage(): React.ReactElement {
     setLoading(true);
     try {
       const result = await signIn("credentials", {
-        email: form.email,
+        email: form.email.trim(),
         password: form.password,
         redirect: false,
+        callbackUrl: "/dashboard/overview",
       });
 
       if (result?.ok) {
+        const session = await getSession();
+        if (!session?.user) {
+          setError("Signed in, but the session could not be established. Please try again.");
+          return;
+        }
+
         try {
           if (typeof document !== "undefined") {
             if (remember) {
@@ -99,10 +125,12 @@ function LoginPage(): React.ReactElement {
         } catch {
           // ignore
         }
-        router.push("/dashboard/overview");
-      } else {
-        setError(result?.error || "Login failed.");
+
+        window.location.assign("/dashboard/overview");
+        return;
       }
+
+      setError(resolveLoginError(result ?? {}));
     } catch (err) {
       console.error("Login error:", err);
       setError((err as Error)?.message || "Login request failed.");
