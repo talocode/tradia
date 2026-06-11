@@ -16,6 +16,8 @@ function buildTestProgram(): Command {
     .command('confluence <symbol>')
     .option('-d, --direction <direction>', 'bullish or bearish');
   program.command('config').description('Show provider status');
+  program.command('init').description('Run BYOK setup wizard');
+  program.command('doctor').description('Show diagnostics');
   return program;
 }
 
@@ -61,6 +63,8 @@ describe('CLI command parsing', () => {
         'insider',
         'confluence',
         'config',
+        'init',
+        'doctor',
       ])
     );
   });

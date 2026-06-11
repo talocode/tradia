@@ -1,3 +1,6 @@
+import { mkdtemp, rm } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import {
   createUnusualWhalesProvider,
   getMarketIntelligenceProvider,
@@ -8,47 +11,71 @@ import {
 } from '../src/market-intelligence/index.js';
 import { formatProviderStatus } from '../src/lib/format.js';
 import { MOCK_MODE_MESSAGE } from '../src/lib/disclaimer.js';
+import { setConfigPathForTests, setProvider, setApiKey } from '../src/lib/config.js';
+import { resetCredentialsCache } from '../src/lib/credentials.js';
+import { maskApiKey } from '../src/lib/key-mask.js';
+import { SetupRequiredError } from '../src/lib/setup-messages.js';
 
 describe('market intelligence provider selection', () => {
   const originalEnv = process.env;
+  let tempDir = '';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     process.env = { ...originalEnv };
-  });
-
-  afterAll(() => {
-    process.env = originalEnv;
-  });
-
-  it('selects mock provider when MARKET_INTELLIGENCE_PROVIDER=mock', () => {
-    process.env.MARKET_INTELLIGENCE_PROVIDER = 'mock';
     delete process.env.UNUSUAL_WHALES_API_KEY;
+    delete process.env.MARKET_INTELLIGENCE_PROVIDER;
+    resetCredentialsCache();
+    tempDir = await mkdtemp(join(tmpdir(), 'tradia-provider-test-'));
+    setConfigPathForTests(join(tempDir, 'config.json'));
+  });
 
-    const { provider, meta } = getMarketIntelligenceProvider();
+  afterEach(async () => {
+    process.env = originalEnv;
+    setConfigPathForTests(undefined);
+    resetCredentialsCache();
+    await rm(tempDir, { recursive: true, force: true });
+  });
+
+  it('selects mock provider when provider=mock', async () => {
+    await setProvider('mock');
+    resetCredentialsCache();
+
+    const { provider, meta } = await getMarketIntelligenceProvider();
     expect(provider.name).toBe('mock');
     expect(meta.active).toBe('mock');
     expect(meta.degraded).toBe(false);
     expect(meta.message).toBe(MOCK_MODE_MESSAGE);
   });
 
-  it('falls back to mock when unusual_whales is configured without API key', () => {
-    process.env.MARKET_INTELLIGENCE_PROVIDER = 'unusual_whales';
-    delete process.env.UNUSUAL_WHALES_API_KEY;
+  it('throws when unusual_whales is configured without API key', async () => {
+    await setProvider('unusual_whales');
+    resetCredentialsCache();
 
-    const { provider, meta } = getMarketIntelligenceProvider();
-    expect(provider.name).toBe('mock');
-    expect(meta.degraded).toBe(true);
-    expect(meta.message).toBe(MOCK_MODE_MESSAGE);
+    await expect(getMarketIntelligenceProvider()).rejects.toBeInstanceOf(SetupRequiredError);
+    const status = await getProviderStatus();
+    expect(status.degraded).toBe(true);
+    expect(status.message).toMatch(/tradia init/i);
   });
 
-  it('selects unusual_whales provider when API key is present', () => {
+  it('selects unusual_whales provider when env API key is present', async () => {
     process.env.MARKET_INTELLIGENCE_PROVIDER = 'unusual_whales';
     process.env.UNUSUAL_WHALES_API_KEY = 'test-key';
+    resetCredentialsCache();
 
-    const { provider, meta } = getMarketIntelligenceProvider();
+    const { provider, meta } = await getMarketIntelligenceProvider();
     expect(provider.name).toBe('unusual_whales');
     expect(meta.degraded).toBe(false);
     expect(meta.apiKeyConfigured).toBe(true);
+  });
+
+  it('selects unusual_whales provider when local API key is present', async () => {
+    await setApiKey('local-test-key-1234');
+    await setProvider('unusual_whales');
+    resetCredentialsCache();
+
+    const { provider, meta } = await getMarketIntelligenceProvider();
+    expect(provider.name).toBe('unusual_whales');
+    expect(meta.keySource).toBe('local');
   });
 });
 
@@ -117,15 +144,16 @@ describe('provider status output', () => {
     process.env = { ...originalEnv };
     process.env.MARKET_INTELLIGENCE_PROVIDER = 'unusual_whales';
     process.env.UNUSUAL_WHALES_API_KEY = 'super-secret-key-12345';
+    resetCredentialsCache();
   });
 
   afterAll(() => {
     process.env = originalEnv;
   });
 
-  it('does not expose API key in provider status output', () => {
-    const status = getProviderStatus();
-    const formatted = formatProviderStatus(status);
+  it('does not expose API key in provider status output', async () => {
+    const status = await getProviderStatus();
+    const formatted = formatProviderStatus(status, maskApiKey(process.env.UNUSUAL_WHALES_API_KEY));
 
     expect(formatted).not.toContain('super-secret-key-12345');
     expect(formatted).toContain('API key configured:');

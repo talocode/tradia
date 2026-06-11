@@ -1,4 +1,6 @@
 import { MOCK_MODE_MESSAGE } from '../lib/disclaimer.js';
+import { resolveCredentials } from '../lib/credentials.js';
+import { MISSING_KEY_MESSAGE, SetupRequiredError } from '../lib/setup-messages.js';
 import type {
   IntelligenceProviderMeta,
   IntelligenceProviderName,
@@ -13,7 +15,74 @@ export interface ResolvedIntelligenceProvider {
   meta: IntelligenceProviderMeta;
 }
 
-function normalizeProviderName(
+export async function getMarketIntelligenceProvider(): Promise<ResolvedIntelligenceProvider> {
+  const creds = await resolveCredentials();
+
+  if (creds.configuredProvider === 'unusual_whales' && !creds.apiKey) {
+    throw new SetupRequiredError(MISSING_KEY_MESSAGE);
+  }
+
+  if (creds.provider === 'mock') {
+    return {
+      provider: mockMarketIntelligenceProvider,
+      meta: {
+        configured: creds.configuredProvider,
+        active: 'mock',
+        apiKeyConfigured: Boolean(creds.apiKey),
+        degraded: creds.configuredProvider === 'unusual_whales' && !creds.apiKey,
+        message: creds.apiKey ? undefined : MOCK_MODE_MESSAGE,
+        keySource: creds.keySource,
+        configPath: creds.configPath,
+        mockMode: true,
+      },
+    };
+  }
+
+  return {
+    provider: createUnusualWhalesProvider({
+      apiKey: creds.apiKey!,
+    }),
+    meta: {
+      configured: creds.configuredProvider,
+      active: 'unusual_whales',
+      apiKeyConfigured: true,
+      degraded: false,
+      keySource: creds.keySource,
+      configPath: creds.configPath,
+      mockMode: false,
+    },
+  };
+}
+
+export async function getProviderStatus(): Promise<ProviderStatus> {
+  const creds = await resolveCredentials();
+
+  if (creds.configuredProvider === 'unusual_whales' && !creds.apiKey) {
+    return {
+      provider: 'mock',
+      configuredProvider: creds.configuredProvider,
+      apiKeyConfigured: false,
+      degraded: true,
+      message: MISSING_KEY_MESSAGE,
+      keySource: creds.keySource,
+      configPath: creds.configPath,
+      mockMode: true,
+    };
+  }
+
+  return {
+    provider: creds.provider,
+    configuredProvider: creds.configuredProvider,
+    apiKeyConfigured: Boolean(creds.apiKey),
+    degraded: creds.configuredProvider === 'unusual_whales' && !creds.apiKey,
+    message: creds.mockMode ? MOCK_MODE_MESSAGE : undefined,
+    keySource: creds.keySource,
+    configPath: creds.configPath,
+    mockMode: creds.mockMode,
+  };
+}
+
+export function normalizeProviderName(
   value: string | undefined
 ): IntelligenceProviderName {
   const normalized = (value ?? 'mock').trim().toLowerCase();
@@ -21,61 +90,4 @@ function normalizeProviderName(
     return 'unusual_whales';
   }
   return 'mock';
-}
-
-function hasApiKey(): boolean {
-  return Boolean(process.env.UNUSUAL_WHALES_API_KEY?.trim());
-}
-
-export function getMarketIntelligenceProvider(): ResolvedIntelligenceProvider {
-  const configured = normalizeProviderName(process.env.MARKET_INTELLIGENCE_PROVIDER);
-  const apiKeyConfigured = hasApiKey();
-
-  if (configured === 'mock') {
-    return {
-      provider: mockMarketIntelligenceProvider,
-      meta: {
-        configured,
-        active: 'mock',
-        apiKeyConfigured,
-        degraded: false,
-        message: apiKeyConfigured ? undefined : MOCK_MODE_MESSAGE,
-      },
-    };
-  }
-
-  if (!apiKeyConfigured) {
-    return {
-      provider: mockMarketIntelligenceProvider,
-      meta: {
-        configured,
-        active: 'mock',
-        apiKeyConfigured: false,
-        degraded: true,
-        message: MOCK_MODE_MESSAGE,
-      },
-    };
-  }
-
-  return {
-    provider: createUnusualWhalesProvider({
-      apiKey: process.env.UNUSUAL_WHALES_API_KEY!.trim(),
-    }),
-    meta: {
-      configured,
-      active: 'unusual_whales',
-      apiKeyConfigured: true,
-      degraded: false,
-    },
-  };
-}
-
-export function getProviderStatus(): ProviderStatus {
-  const { meta } = getMarketIntelligenceProvider();
-  return {
-    provider: meta.active,
-    apiKeyConfigured: meta.apiKeyConfigured,
-    degraded: meta.degraded,
-    message: meta.message,
-  };
 }

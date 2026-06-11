@@ -188,11 +188,21 @@ export function formatConfluence(confluence: ConfluenceSummary): string {
   return lines.join('\n');
 }
 
-export function formatProviderStatus(status: ProviderStatus): string {
+export function formatProviderStatus(
+  status: ProviderStatus,
+  maskedKey?: string
+): string {
   return [
     formatHeader('Provider Status'),
     `Provider: ${formatProviderLabel(status.provider)}`,
+    status.configuredProvider
+      ? `Configured provider: ${formatProviderLabel(status.configuredProvider)}`
+      : '',
     `API key configured: ${status.apiKeyConfigured ? chalk.green('yes') : chalk.yellow('no')}`,
+    status.keySource ? `Key source: ${status.keySource}` : '',
+    maskedKey ? `Masked key: ${maskedKey}` : '',
+    status.configPath ? `Config path: ${status.configPath}` : '',
+    `Mock mode: ${status.mockMode ? chalk.yellow('yes') : chalk.green('no')}`,
     `Degraded (mock fallback): ${status.degraded ? chalk.yellow('yes') : chalk.green('no')}`,
     status.message ? chalk.yellow(`Note: ${status.message}`) : '',
     '',
@@ -200,6 +210,48 @@ export function formatProviderStatus(status: ProviderStatus): string {
   ]
     .filter(Boolean)
     .join('\n');
+}
+
+export interface DoctorInfo {
+  version: string;
+  provider: string;
+  configuredProvider: string;
+  apiKeyConfigured: boolean;
+  keySource: string;
+  configPath: string;
+  mockMode: boolean;
+  maskedKey: string;
+  hasConfigFile: boolean;
+}
+
+export function formatDoctor(info: DoctorInfo): string {
+  return [
+    formatHeader('Tradia Doctor'),
+    `Package version: ${info.version}`,
+    `Active provider: ${formatProviderLabel(info.provider)}`,
+    `Configured provider: ${formatProviderLabel(info.configuredProvider)}`,
+    `API key configured: ${info.apiKeyConfigured ? chalk.green('yes') : chalk.yellow('no')}`,
+    `Key source: ${info.keySource}`,
+    `Masked key: ${info.maskedKey}`,
+    `Config path: ${info.configPath}`,
+    `Config file exists: ${info.hasConfigFile ? 'yes' : 'no'}`,
+    `Mock mode: ${info.mockMode ? chalk.yellow('yes') : chalk.green('no')}`,
+    '',
+    formatDisclaimer(),
+  ].join('\n');
+}
+
+export function formatWelcomeMenu(): string {
+  return [
+    '',
+    chalk.yellow('No live provider configured.'),
+    '',
+    'Choose:',
+    '  1. Continue in mock mode',
+    '  2. Add my Unusual Whales API key',
+    '  3. How to get an API key',
+    '  4. Exit',
+  ].join('\n');
 }
 
 export function formatHomeMenu(): string {

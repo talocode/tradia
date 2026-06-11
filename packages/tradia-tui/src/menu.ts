@@ -1,6 +1,8 @@
 import * as readline from 'readline';
+import { isFirstRun } from './lib/credentials.js';
 import { formatDisclaimer, formatHomeMenu } from './lib/format.js';
 import { getProviderStatus } from './market-intelligence/index.js';
+import { runWelcomeSetup } from './commands/setup.js';
 import {
   runBrief,
   runConfig,
@@ -31,8 +33,15 @@ async function promptSymbol(rl: readline.Interface): Promise<string | null> {
 }
 
 export async function runInteractive(): Promise<void> {
+  if (await isFirstRun()) {
+    const shouldContinue = await runWelcomeSetup();
+    if (!shouldContinue) {
+      return;
+    }
+  }
+
   const rl = createInterface();
-  const status = getProviderStatus();
+  const status = await getProviderStatus();
 
   console.log(formatDisclaimer());
   if (status.message) {
@@ -109,7 +118,7 @@ export async function runInteractive(): Promise<void> {
             break;
           }
           case '8':
-            output = runConfig();
+            output = await runConfig();
             break;
           case '9':
             console.log('Goodbye.');
