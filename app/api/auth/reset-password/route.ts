@@ -1,7 +1,7 @@
 // app/api/auth/reset-password/route.ts
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminSupabase } from "@/utils/supabase/admin";
 
 type ResetRequestBody = { token?: unknown; password?: unknown };
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     // lookup token
-    const supabase = createClient();
+    const supabase = createAdminSupabase();
     const { data: row, error: terr } = await supabase
       .from("password_reset_tokens")
       .select("token, user_id, expires_at")

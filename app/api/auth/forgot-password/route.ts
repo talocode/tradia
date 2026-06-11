@@ -1,7 +1,7 @@
 // app/api/auth/forgot-password/route.ts
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminSupabase } from "@/utils/supabase/admin";
 import { sendPasswordResetEmail } from "@/lib/mailer";
 
 type ForgotRequestBody = { email?: unknown };
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     // find user by email
-    const supabase = createClient();
+    const supabase = createAdminSupabase();
     const { data: user, error: uerr } = await supabase
       .from("users")
       .select("id, email_verified")
@@ -42,8 +42,16 @@ export async function POST(req: Request) {
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
     // store token
-  // Supabase: upsert into password_reset_tokens
-  await supabase.from("password_reset_tokens").upsert({ token, user_id: user.id, expires_at: expiresAt.toISOString(), created_at: new Date().toISOString() });
+    const { error: tokenErr } = await supabase.from("password_reset_tokens").upsert({
+      token,
+      user_id: user.id,
+      expires_at: expiresAt.toISOString(),
+      created_at: new Date().toISOString(),
+    });
+    if (tokenErr) {
+      console.error("Failed to store password reset token:", tokenErr);
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
 
     // try sending email, but don't leak errors to client
     try {

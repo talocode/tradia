@@ -25,7 +25,7 @@ export async function sendVerificationEmail(to: string, token: string) {
 // (forgot-password route) so this function only builds and sends the email.
 export async function sendPasswordResetEmail(to: string, token: string) {
   const origin = resolvePublicOrigin();
-  const resetUrl = `${origin}/api/reset-password?token=${encodeURIComponent(
+  const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(
     token
   )}`;
 
