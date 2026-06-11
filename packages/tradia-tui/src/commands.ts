@@ -4,6 +4,8 @@ import {
   getProviderStatus,
   validateTickerSymbol,
 } from './market-intelligence/index.js';
+import { resolveCredentials } from './lib/credentials.js';
+import { maskApiKey } from './lib/key-mask.js';
 import {
   formatConfluence,
   formatCongress,
@@ -28,7 +30,7 @@ async function withSpinner<T>(label: string, task: () => Promise<T>): Promise<T>
 }
 
 export async function runBrief(): Promise<string> {
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const brief = await withSpinner('Fetching morning brief...', () =>
     provider.getMorningBrief()
   );
@@ -40,7 +42,7 @@ export async function runTicker(symbol: string): Promise<string> {
   if (!validation.valid) {
     throw new Error(validation.error);
   }
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const analysis = await withSpinner(`Analyzing ${validation.symbol}...`, () =>
     provider.analyzeTicker({ symbol: validation.symbol! })
   );
@@ -52,7 +54,7 @@ export async function runFlow(symbol: string): Promise<string> {
   if (!validation.valid) {
     throw new Error(validation.error);
   }
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const flow = await withSpinner(`Fetching unusual flow for ${validation.symbol}...`, () =>
     provider.getUnusualFlow({ symbol: validation.symbol! })
   );
@@ -64,7 +66,7 @@ export async function runDarkPool(symbol: string): Promise<string> {
   if (!validation.valid) {
     throw new Error(validation.error);
   }
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const dark = await withSpinner(`Fetching dark pool context for ${validation.symbol}...`, () =>
     provider.getDarkPoolContext({ symbol: validation.symbol! })
   );
@@ -76,7 +78,7 @@ export async function runCongress(symbol: string): Promise<string> {
   if (!validation.valid) {
     throw new Error(validation.error);
   }
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const congress = await withSpinner(`Fetching congress trades for ${validation.symbol}...`, () =>
     provider.getCongressTrades({ symbol: validation.symbol! })
   );
@@ -88,7 +90,7 @@ export async function runInsider(symbol: string): Promise<string> {
   if (!validation.valid) {
     throw new Error(validation.error);
   }
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const insider = await withSpinner(`Fetching insider activity for ${validation.symbol}...`, () =>
     provider.getInsiderActivity({ symbol: validation.symbol! })
   );
@@ -103,7 +105,7 @@ export async function runConfluence(
   if (!validation.valid) {
     throw new Error(validation.error);
   }
-  const { provider } = getMarketIntelligenceProvider();
+  const { provider } = await getMarketIntelligenceProvider();
   const confluence = await withSpinner(`Computing confluence for ${validation.symbol}...`, () =>
     provider.getConfluence({
       symbol: validation.symbol!,
@@ -113,6 +115,8 @@ export async function runConfluence(
   return formatConfluence(confluence);
 }
 
-export function runConfig(): string {
-  return formatProviderStatus(getProviderStatus());
+export async function runConfig(): Promise<string> {
+  const status = await getProviderStatus();
+  const creds = await resolveCredentials();
+  return formatProviderStatus(status, maskApiKey(creds.apiKey));
 }

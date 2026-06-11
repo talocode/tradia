@@ -116,17 +116,26 @@ export interface MarketIntelligenceProvider {
   }): Promise<ConfluenceSummary>;
 }
 
+export type KeySource = 'environment' | 'local' | 'none';
+
 export interface IntelligenceProviderMeta {
   configured: IntelligenceProviderName;
   active: IntelligenceProviderName;
   apiKeyConfigured: boolean;
   degraded: boolean;
   message?: string;
+  keySource?: KeySource;
+  configPath?: string;
+  mockMode?: boolean;
 }
 
 export interface ProviderStatus {
   provider: IntelligenceProviderName;
+  configuredProvider?: IntelligenceProviderName;
   apiKeyConfigured: boolean;
   degraded: boolean;
   message?: string;
+  keySource?: KeySource;
+  configPath?: string;
+  mockMode?: boolean;
 }

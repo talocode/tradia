@@ -1,10 +1,10 @@
 import { Command } from 'commander';
 import { APP_NAME, APP_TAGLINE, DISCLAIMER } from './lib/disclaimer.js';
 import { loadEnvironment } from './lib/env.js';
+import { PACKAGE_VERSION } from './lib/version.js';
 import { runInteractive } from './menu.js';
 import {
   runBrief,
-  runConfig,
   runCongress,
   runConfluence,
   runDarkPool,
@@ -12,6 +12,15 @@ import {
   runInsider,
   runTicker,
 } from './commands.js';
+import {
+  runClearKey,
+  runConfigShow,
+  runConfigStatus,
+  runDoctor,
+  runInit,
+  runSetKey,
+  runSetProvider,
+} from './commands/setup.js';
 
 loadEnvironment();
 
@@ -21,7 +30,62 @@ program
   .name('tradia')
   .description(`${APP_NAME} — ${APP_TAGLINE}`)
   .addHelpText('after', `\n${DISCLAIMER}\n`)
-  .version('0.1.0');
+  .version(PACKAGE_VERSION);
+
+program
+  .command('init')
+  .description('Run BYOK setup wizard')
+  .action(async () => {
+    console.log(await runInit());
+  });
+
+program
+  .command('doctor')
+  .description('Show environment and configuration diagnostics')
+  .action(async () => {
+    console.log(await runDoctor());
+  });
+
+const configCmd = program
+  .command('config')
+  .description('Show or manage local configuration');
+
+configCmd
+  .command('status')
+  .description('Show provider configuration status')
+  .action(async () => {
+    console.log(await runConfigStatus());
+  });
+
+configCmd
+  .command('set-key')
+  .description('Store your Unusual Whales API key locally')
+  .option('--key <key>', 'API key value')
+  .action(async (options: { key?: string }) => {
+    console.log(await runSetKey(options.key));
+  });
+
+configCmd
+  .command('clear-key')
+  .description('Remove stored API key from local config')
+  .action(async () => {
+    console.log(await runClearKey());
+  });
+
+configCmd
+  .command('provider')
+  .description('Set market intelligence provider')
+  .argument('<name>', 'mock or unusual_whales')
+  .action(async (name: string) => {
+    if (name !== 'mock' && name !== 'unusual_whales') {
+      throw new Error('Provider must be mock or unusual_whales');
+    }
+    console.log(await runSetProvider(name));
+  });
+
+configCmd.action(async () => {
+  console.log(await runConfigShow());
+});
 
 program
   .command('brief', { isDefault: false })
@@ -75,13 +139,6 @@ program
         ? options.direction
         : undefined;
     console.log(await runConfluence(symbol, direction));
-  });
-
-program
-  .command('config')
-  .description('Show provider configuration status')
-  .action(() => {
-    console.log(runConfig());
   });
 
 program.action(async () => {
