@@ -156,6 +156,33 @@ pnpm dev
 
 Visit [http://localhost:3000](http://localhost:3000)
 
+### TradiaAI TUI
+
+Run TradiaAI locally in your terminal:
+
+```bash
+npx tradia
+```
+
+Install globally:
+
+```bash
+npm install -g tradia
+tradia
+```
+
+Set live provider:
+
+```bash
+export UNUSUAL_WHALES_API_KEY=your_key_here
+export MARKET_INTELLIGENCE_PROVIDER=unusual_whales
+tradia brief
+```
+
+Mock mode works without an API key. No auto-trading, no broker connections.
+
+See [docs/TRADIA_TUI.md](./docs/TRADIA_TUI.md) for full setup.
+
 #### Build & Deploy
 
 ```bash
