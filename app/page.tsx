@@ -433,7 +433,7 @@ export default function Home(): React.ReactElement {
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Precision for Prop Firms: Master Rules & Protect Capital</h2>
                         <p className="text-gray-700 dark:text-gray-300 max-w-3xl mx-auto text-lg mb-12">
-                            TradiaAI isn't just another trading journal. It's engineered to help you navigate the strict rules of prop firm challenges and funded accounts, transforming how you manage risk and decision-making.
+                            TradiaAI isn&apos;t just another trading journal. It&apos;s engineered to help you navigate the strict rules of prop firm challenges and funded accounts, transforming how you manage risk and decision-making.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

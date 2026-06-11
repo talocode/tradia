@@ -260,14 +260,11 @@ function OverviewContent() {
         }
     }, [filter, customRange]);
 
-    React.useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.replace('/login');
-        }
-    }, [status, router]);
-
     if (status === 'loading') return <Spinner />;
-    if (status === 'unauthenticated') return <Spinner />;
+    if (status === 'unauthenticated') {
+        router.replace('/login');
+        return <Spinner />;
+    }
 
     const getTabDefinitions = () => {
         if (!adminChecked) return BASE_TAB_DEFS;

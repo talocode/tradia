@@ -1,7 +1,7 @@
 // app/api/auth/verify-email/route.ts
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { createAdminSupabase } from "@/utils/supabase/admin";
+import { resolvePublicOrigin } from "@/lib/app-origin";
 
 /**
  * Verification endpoint
@@ -11,7 +11,7 @@ import { createAdminSupabase } from "@/utils/supabase/admin";
  */
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const origin = url.origin;
+  const origin = resolvePublicOrigin(req);
   const token = url.searchParams.get("token") || "";
 
   if (!token) {
@@ -58,7 +58,7 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL("/verify-email/success", origin));
   } catch (err) {
     console.error("verify-email: unexpected error", err);
-    return NextResponse.redirect(new URL("/verify-email/failed", (new URL(req.url)).origin));
+    return NextResponse.redirect(new URL("/verify-email/failed", origin));
   }
 }
 

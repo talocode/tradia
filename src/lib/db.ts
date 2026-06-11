@@ -13,7 +13,24 @@ declare global {
   var __global_pg_pool__: Pool | undefined;
 }
 
+function isProductionBuildPhase(): boolean {
+  return process.env.NEXT_PHASE === "phase-production-build";
+}
+
 function buildPoolConfig(): PoolConfig {
+  // During `next build`, API routes are analyzed but DB is not used.
+  // Avoid failing the build when DATABASE_URL is only set in production runtime.
+  if (
+    isProductionBuildPhase() &&
+    !process.env.DATABASE_URL &&
+    !process.env.DB_USER
+  ) {
+    return {
+      connectionString: "postgresql://build:build@127.0.0.1:5432/build",
+      max: 1,
+    };
+  }
+
   // If a single DATABASE_URL is provided, use it (recommended for Supabase)
   if (process.env.DATABASE_URL) {
     return {
